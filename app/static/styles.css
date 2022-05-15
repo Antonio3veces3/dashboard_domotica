@@ -1,0 +1,15 @@
+.title{
+    text-align: center; margin-top: 50px;
+}
+.divCharts{
+    display: flex; margin-left: 180px;
+}
+.divTemp{
+    margin-right: 50px;
+}
+#chartTemp{
+    width:30rem; max-height: 500px;
+}
+#chartHum{
+    width:30rem; max-height: 500px;
+}

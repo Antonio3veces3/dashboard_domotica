@@ -3,7 +3,19 @@ const app = require('express')();
 const http = require('http');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
-const io = new Server(server);
+
+
+server.listen(3001, ()=>{
+    console.log('Listing on 3001');
+});
+
+const io = new Server(server,{
+    cors: {
+        origin: "http://127.0.0.1:5500",
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+    }
+});
 
 let count = 0;
 
@@ -15,6 +27,7 @@ clientMqtt.on('connect', connect);
 //CONEXION MONGO DB
 const mongoose = require('mongoose');
 const {schema} = require('./schema');
+const express = require('express');
 const user = "domotic-user",
       pass = "Domotic2022",
       database = "domoticDatabase";
@@ -32,8 +45,9 @@ const modelData =  mongoose.model('monitoreos', schema);
 
 //RUTAS SERVIDOR
 app.use(cors());
+app.use("/static", express.static('./app/static/'));
 app.get('/', (req, res)=>{
-    res.sendFile(__dirname + '/html/index.html');
+    res.sendFile(__dirname + '/app/app.html');
 })
 
 
@@ -44,20 +58,21 @@ io.on('connection', (socket) => {
         socket.emit('vectorTemp', data);
     });
     clientMqtt.on('message', (topic, message)=>{
-       // console.log(`${topic} - ${parseInt(message,10)}`);
         const {tiempo, clima, notificacion} = JSON.parse(message);
+        postTrama(tiempo.fecha,tiempo.hora,clima.temperatura, clima.humedad, notificacion.accion, notificacion.advertencia);
+        console.log(count + ' mensaje recibido');
+        
         if( count == 9){
             count = 0;
             getClima().then((data)=>{
                 socket.emit('vectorTemp', data);
-            });
+                console.log('DATOS ENVIADOS...');
+            })
             return;
         }
         count++;
-        postTrama(tiempo.fecha,tiempo.hora,clima.temperatura, clima.humedad, notificacion.accion, notificacion.advertencia);
     });
     socket.on('disconnect',()=>console.log('User disconnected'));
-    socket.emit('count', count);
 })
 //FUNCIONES MQTT
 function connect() { 
@@ -111,9 +126,4 @@ const getClima = async()=>{
 };
 
 
-server.listen(3000, ()=>{
-    console.log('Listing on 3000');
-});
 
-//postTrama("09/05/2022", "18:00", 20,50,"LED ON", "Hay movimiento");
-//getTramas().then(console.log);
