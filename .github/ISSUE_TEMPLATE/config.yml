@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Soporte de la Comunidad de GitHub
+  - name: Trabajo de front-end
     url: https://github.community/
-    about: Please ask and answer questions here.
-  - name: GitHub Security Bug Bounty
+    about: Agrega un Screenshot de tu vista y una descripcion
+  - name: Trabajo de back-end
     url: https://bounty.github.com/
-    about: Please report security vulnerabilities here.
+    about: Agrega una descripción de tu tarea
