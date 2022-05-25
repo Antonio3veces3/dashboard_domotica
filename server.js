@@ -60,7 +60,6 @@ io.on('connection', (socket) => {
     clientMqtt.on('message', (topic, message)=>{
         const {tiempo, clima, notificacion} = JSON.parse(message);
         postTrama(tiempo.fecha,tiempo.hora,clima.temperatura, clima.humedad, notificacion.accion, notificacion.advertencia);
-        console.log(count + ' mensaje recibido');
         
         if( count == 9){
             count = 0;
@@ -102,7 +101,7 @@ const postTrama = async (fecha, hora,temperatura, humedad,accion, advertencia) =
     });
 
     await datos.save();
-    console.log('REGISTRO AGREGADO CORRECTAMENTE');
+    console.log(count + ' - REGISTRO AGREGADO CORRECTAMENTE');
 }
 
 const getClima = async()=>{
